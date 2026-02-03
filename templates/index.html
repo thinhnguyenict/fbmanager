@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 text-center">
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <i class="fab fa-facebook fa-5x text-primary mb-4"></i>
+                <h1 class="mb-4">Quản lý Fanpage Facebook</h1>
+                <p class="lead mb-4">
+                    Đăng nhập để quản lý các fanpage của bạn, xem thống kê, và tạo bài viết mới.
+                </p>
+                <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">
+                    <i class="fab fa-facebook"></i> Đăng nhập với Facebook
+                </a>
+            </div>
+        </div>
+        
+        <div class="card shadow mt-4">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-info-circle"></i> Tính năng</h5>
+                <ul class="list-group list-group-flush text-start">
+                    <li class="list-group-item">
+                        <i class="fas fa-check text-success"></i> Xem danh sách fanpage đang quản lý
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-check text-success"></i> Xem chi tiết bài viết, video, và link
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-check text-success"></i> Thống kê reach, engagement, và click
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-check text-success"></i> Tạo, chỉnh sửa, và xóa bài viết
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

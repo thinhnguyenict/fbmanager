@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Danh sách Fanpage - FB Manager{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-list"></i> Danh sách Fanpage của bạn</h1>
+</div>
+
+{% if pages %}
+<div class="row">
+    {% for page in pages %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100 shadow-sm hover-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    {% if page.picture %}
+                    <img src="{{ page.picture.data.url }}" alt="{{ page.name }}" class="rounded-circle me-3" width="60" height="60">
+                    {% else %}
+                    <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px;">
+                        <i class="fab fa-facebook-f fa-2x text-white"></i>
+                    </div>
+                    {% endif %}
+                    <div>
+                        <h5 class="card-title mb-0">{{ page.name }}</h5>
+                        <small class="text-muted">{{ page.category }}</small>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <i class="fas fa-users text-primary"></i>
+                    <span class="fw-bold">{{ "{:,}".format(page.fan_count) if page.fan_count else '0' }}</span> người theo dõi
+                </div>
+                
+                <a href="{{ url_for('fanpage_detail', page_id=page.id) }}" class="btn btn-primary w-100">
+                    <i class="fas fa-eye"></i> Xem chi tiết
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info text-center">
+    <i class="fas fa-info-circle fa-3x mb-3"></i>
+    <h4>Không tìm thấy fanpage nào</h4>
+    <p>Bạn chưa quản lý fanpage nào hoặc chưa cấp quyền truy cập.</p>
+</div>
+{% endif %}
+{% endblock %}
