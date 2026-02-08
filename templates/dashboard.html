@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FB Manager - Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f7fa; }
+        
+        /* Navbar */
+        .navbar { background: #667eea; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .navbar h1 { font-size: 24px; }
+        .navbar .user { display: flex; gap: 15px; align-items: center; }
+        .navbar a { color: white; text-decoration: none; padding: 8px 20px; background: rgba(255,255,255,0.2); border-radius: 5px; transition: 0.3s; font-weight: 600; }
+        .navbar a:hover { background: rgba(255,255,255,0.3); }
+        
+        /* Sidebar */
+        .layout { display: flex; }
+        .sidebar { width: 250px; background: white; min-height: calc(100vh - 60px); box-shadow: 2px 0 10px rgba(0,0,0,0.05); }
+        .sidebar-menu { list-style: none; padding: 20px 0; }
+        .sidebar-menu li { margin: 5px 0; }
+        .sidebar-menu a { display: flex; align-items: center; gap: 10px; padding: 12px 25px; color: #555; text-decoration: none; transition: 0.3s; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background: #f0f2f5; color: #667eea; font-weight: 600; border-right: 3px solid #667eea; }
+        
+        /* Main content */
+        .main-content { flex: 1; padding: 30px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card h2 { margin-bottom: 20px; color: #333; border-bottom: 3px solid #667eea; padding-bottom: 10px; }
+        .status { display: inline-block; padding: 6px 16px; border-radius: 20px; font-weight: 700; font-size: 14px; }
+        .status.running { background: #d4edda; color: #155724; }
+        .info-row { margin: 15px 0; font-size: 15px; }
+        .info-row strong { color: #555; min-width: 150px; display: inline-block; }
+        .logs { background: #1e1e1e; color: #00ff00; padding: 20px; border-radius: 8px; max-height: 400px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; }
+        .refresh-btn { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 600; margin-bottom: 15px; }
+        .refresh-btn:hover { background: #218838; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>📊 FB Manager</h1>
+        <div class="user">
+            <span>👤 Xin chào, <strong>{{ username }}</strong>!</span>
+            <a href="/logout">Đăng xuất</a>
+        </div>
+    </div>
+    
+    <div class="layout">
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="/dashboard" class="active">📊 Dashboard</a></li>
+                <li><a href="/fanpages">📄 Quản lý Fanpage</a></li>
+                <li><a href="/posts">📝 Quản lý bài viết</a></li>
+                <li><a href="/messages">💬 Tin nhắn</a></li>
+                <li><a href="/analytics">📈 Thống kê</a></li>
+            </ul>
+        </aside>
+        
+        <main class="main-content">
+            <div class="container">
+                <div class="card">
+                    <h2>⚙️ Trạng thái hệ thống</h2>
+                    <div class="info-row"><strong>Trạng thái:</strong> <span class="status running">● RUNNING</span></div>
+                    <div class="info-row"><strong>FB Email:</strong> <span id="fb-email">Đang tải...</span></div>
+                    <div class="info-row"><strong>Debug Mode:</strong> <span id="debug-mode">Đang tải...</span></div>
+                </div>
+                
+                <div class="card">
+                    <h2>📋 System Logs</h2>
+                    <button class="refresh-btn" onclick="loadLogs()">🔄 Refresh Logs</button>
+                    <div class="logs" id="logs">Đang tải logs...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        function loadStatus() {
+            fetch('/api/status')
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('fb-email').textContent = data.fb_email;
+                    document.getElementById('debug-mode').textContent = data.debug_mode;
+                })
+                .catch(err => console.error('Error:', err));
+        }
+        
+        function loadLogs() {
+            document.getElementById('logs').textContent = 'Đang tải logs...';
+            fetch('/api/logs')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('logs').textContent = 'Error: ' + data.error;
+                    } else {
+                        document.getElementById('logs').innerHTML = data.logs.join('<br>');
+                    }
+                });
+        }
+        
+        loadStatus();
+        loadLogs();
+        setInterval(loadLogs, 30000);
+    </script>
+</body>
+</html>

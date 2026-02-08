@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FB Manager - Tin nhắn</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f7fa; }
+        
+        .navbar { background: #667eea; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .navbar h1 { font-size: 24px; }
+        .navbar .user { display: flex; gap: 15px; align-items: center; }
+        .navbar a { color: white; text-decoration: none; padding: 8px 20px; background: rgba(255,255,255,0.2); border-radius: 5px; transition: 0.3s; font-weight: 600; }
+        .navbar a:hover { background: rgba(255,255,255,0.3); }
+        
+        .layout { display: flex; }
+        .sidebar { width: 250px; background: white; min-height: calc(100vh - 60px); box-shadow: 2px 0 10px rgba(0,0,0,0.05); }
+        .sidebar-menu { list-style: none; padding: 20px 0; }
+        .sidebar-menu li { margin: 5px 0; }
+        .sidebar-menu a { display: flex; align-items: center; gap: 10px; padding: 12px 25px; color: #555; text-decoration: none; transition: 0.3s; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background: #f0f2f5; color: #667eea; font-weight: 600; border-right: 3px solid #667eea; }
+        
+        .main-content { flex: 1; padding: 30px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card h2 { margin-bottom: 20px; color: #333; border-bottom: 3px solid #667eea; padding-bottom: 10px; }
+        
+        .message-list { max-height: 600px; overflow-y: auto; }
+        .message-item { border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; margin-bottom: 15px; transition: 0.3s; }
+        .message-item:hover { background: #f8f9fa; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .message-item.unread { border-left: 4px solid #667eea; background: #f0f4ff; }
+        .message-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .message-sender { font-weight: 700; color: #333; font-size: 16px; }
+        .message-time { color: #999; font-size: 13px; }
+        .message-content { color: #555; line-height: 1.6; margin-bottom: 10px; }
+        .message-fanpage { color: #667eea; font-size: 13px; margin-bottom: 10px; }
+        .reply-section { margin-top: 10px; display: none; }
+        .reply-section.show { display: block; }
+        .reply-input { width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; resize: vertical; }
+        .btn { padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; transition: 0.3s; margin-right: 5px; }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-primary:hover { background: #5568d3; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-success:hover { background: #218838; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-secondary:hover { background: #5a6268; }
+        
+        .badge { padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .badge-danger { background: #f8d7da; color: #721c24; }
+        .badge-success { background: #d4edda; color: #155724; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>📊 FB Manager</h1>
+        <div class="user">
+            <span>👤 Xin chào, <strong>{{ username }}</strong>!</span>
+            <a href="/logout">Đăng xuất</a>
+        </div>
+    </div>
+    
+    <div class="layout">
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="/dashboard">📊 Dashboard</a></li>
+                <li><a href="/fanpages">📄 Quản lý Fanpage</a></li>
+                <li><a href="/posts">📝 Quản lý bài viết</a></li>
+                <li><a href="/messages" class="active">💬 Tin nhắn</a></li>
+                <li><a href="/analytics">📈 Thống kê</a></li>
+            </ul>
+        </aside>
+        
+        <main class="main-content">
+            <div class="container">
+                <div class="card">
+                    <h2>💬 Tin nhắn</h2>
+                    <div class="message-list" id="message-list">
+                        <p style="text-align: center; color: #999;">Đang tải tin nhắn...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        function loadMessages() {
+            fetch('/api/messages')
+                .then(r => r.json())
+                .then(data => {
+                    const list = document.getElementById('message-list');
+                    if (data.messages.length === 0) {
+                        list.innerHTML = '<p style="text-align: center; color: #999;">Chưa có tin nhắn nào</p>';
+                        return;
+                    }
+                    
+                    list.innerHTML = data.messages.map(msg => `
+                        <div class="message-item ${msg.status === 'unread' ? 'unread' : ''}">
+                            <div class="message-header">
+                                <span class="message-sender">👤 ${msg.sender_name}</span>
+                                <span class="message-time">${msg.time}</span>
+                            </div>
+                            <div class="message-fanpage">📄 ${msg.fanpage_name}</div>
+                            <div class="message-content">${msg.message}</div>
+                            <div>
+                                ${msg.status === 'unread' ? '<span class="badge badge-danger">Chưa đọc</span>' : '<span class="badge badge-success">Đã đọc</span>'}
+                                <button class="btn btn-primary" onclick="toggleReply('${msg.id}')">💬 Trả lời</button>
+                            </div>
+                            <div class="reply-section" id="reply-${msg.id}">
+                                <textarea class="reply-input" id="reply-text-${msg.id}" rows="3" placeholder="Nhập tin nhắn trả lời..."></textarea>
+                                <div style="margin-top: 10px;">
+                                    <button class="btn btn-success" onclick="sendReply('${msg.id}')">✉️ Gửi</button>
+                                    <button class="btn btn-secondary" onclick="toggleReply('${msg.id}')">Hủy</button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                });
+        }
+        
+        function toggleReply(messageId) {
+            const replySection = document.getElementById(`reply-${messageId}`);
+            replySection.classList.toggle('show');
+        }
+        
+        function sendReply(messageId) {
+            const replyText = document.getElementById(`reply-text-${messageId}`).value.trim();
+            if (!replyText) {
+                alert('Vui lòng nhập nội dung tin nhắn');
+                return;
+            }
+            
+            fetch(`/api/messages/${messageId}/reply`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({reply: replyText})
+            })
+            .then(r => r.json())
+            .then(result => {
+                alert(result.message);
+                toggleReply(messageId);
+                loadMessages();
+            });
+        }
+        
+        loadMessages();
+        setInterval(loadMessages, 30000); // Refresh every 30 seconds
+    </script>
+</body>
+</html>
