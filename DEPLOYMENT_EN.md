@@ -134,19 +134,38 @@ sudo chown $USER:$USER /var/log/fbmanager
 
 If the application uses Selenium for browser automation:
 
+### Method 1: Using webdriver-manager (Recommended)
+
 ```bash
 # Install Chrome
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 sudo apt install ./google-chrome-stable_current_amd64.deb -y
+rm google-chrome-stable_current_amd64.deb
 
-# Install ChromeDriver
-CHROME_DRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
-wget -N https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip
-unzip chromedriver_linux64.zip
-sudo mv chromedriver /usr/local/bin/
-sudo chmod +x /usr/local/bin/chromedriver
-rm chromedriver_linux64.zip
+# ChromeDriver will be managed automatically by webdriver-manager
+# (already included in requirements.txt)
 ```
+
+### Method 2: Manual ChromeDriver Installation
+
+```bash
+# Get Chrome version
+CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+CHROME_MAJOR_VERSION=$(echo $CHROME_VERSION | cut -d'.' -f1)
+
+# Download matching ChromeDriver
+# See: https://googlechromelabs.github.io/chrome-for-testing/
+wget https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/$CHROME_VERSION/linux64/chromedriver-linux64.zip
+unzip chromedriver-linux64.zip
+sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
+sudo chmod +x /usr/local/bin/chromedriver
+rm -rf chromedriver-linux64*
+
+# Verify installation
+chromedriver --version
+```
+
+**Note**: webdriver-manager automatically downloads and manages the correct ChromeDriver version for your Chrome installation.
 
 ## Step 10: Setup systemd Service (Auto-start)
 

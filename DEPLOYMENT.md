@@ -134,19 +134,38 @@ sudo chown $USER:$USER /var/log/fbmanager
 
 Nếu ứng dụng sử dụng Selenium để tự động hóa trình duyệt:
 
+### Cách 1: Sử dụng webdriver-manager (Khuyến nghị)
+
 ```bash
 # Cài đặt Chrome
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 sudo apt install ./google-chrome-stable_current_amd64.deb -y
+rm google-chrome-stable_current_amd64.deb
 
-# Cài đặt ChromeDriver
-CHROME_DRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE)
-wget -N https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip
-unzip chromedriver_linux64.zip
-sudo mv chromedriver /usr/local/bin/
-sudo chmod +x /usr/local/bin/chromedriver
-rm chromedriver_linux64.zip
+# ChromeDriver sẽ được quản lý tự động bởi webdriver-manager
+# (đã được cài đặt trong requirements.txt)
 ```
+
+### Cách 2: Cài đặt ChromeDriver thủ công
+
+```bash
+# Tải phiên bản ChromeDriver tương thích
+CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+CHROME_MAJOR_VERSION=$(echo $CHROME_VERSION | cut -d'.' -f1)
+
+# Tải ChromeDriver cho Chrome phiên bản tương ứng
+# Xem: https://googlechromelabs.github.io/chrome-for-testing/
+wget https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/$CHROME_VERSION/linux64/chromedriver-linux64.zip
+unzip chromedriver-linux64.zip
+sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
+sudo chmod +x /usr/local/bin/chromedriver
+rm -rf chromedriver-linux64*
+
+# Xác nhận cài đặt
+chromedriver --version
+```
+
+**Lưu ý**: webdriver-manager tự động tải và quản lý ChromeDriver phù hợp với phiên bản Chrome của bạn.
 
 ## Bước 10: Thiết lập systemd service (chạy tự động)
 

@@ -154,18 +154,13 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
         rm google-chrome-stable_current_amd64.deb
     fi
     
-    # Install ChromeDriver
-    CHROME_DRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE 2>/dev/null || echo "114.0.5735.90")
-    wget -N https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip 2>/dev/null || {
-        echo "⚠️  Could not download ChromeDriver, skipping..."
-    }
-    if [ -f "chromedriver_linux64.zip" ]; then
-        unzip -o chromedriver_linux64.zip
-        sudo mv chromedriver /usr/local/bin/
-        sudo chmod +x /usr/local/bin/chromedriver
-        rm chromedriver_linux64.zip
-        echo "✓ ChromeDriver installed"
-    fi
+    # Install ChromeDriver using webdriver-manager (recommended approach)
+    echo "Installing ChromeDriver via webdriver-manager..."
+    source $INSTALL_DIR/venv/bin/activate
+    pip install webdriver-manager
+    echo "✓ webdriver-manager installed (ChromeDriver will be managed automatically)"
+    echo "  Note: ChromeDriver will be downloaded on first use"
+    deactivate
 fi
 
 echo ""
