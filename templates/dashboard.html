@@ -46,6 +46,9 @@
         </div>
     </div>
     <script>
+        // Constants
+        const LOG_REFRESH_INTERVAL_MS = 30000;
+        
         function loadStatus() {
             fetch('/api/status')
                 .then(r => r.json())
@@ -64,7 +67,12 @@
                     if (data.error) {
                         document.getElementById('logs').textContent = 'Error: ' + data.error;
                     } else {
-                        document.getElementById('logs').innerHTML = data.logs.join('<br>');
+                        // Use textContent to prevent XSS, then format with line breaks
+                        const logsElement = document.getElementById('logs');
+                        logsElement.textContent = ''; // Clear existing content
+                        data.logs.forEach(log => {
+                            logsElement.textContent += log;
+                        });
                     }
                 })
                 .catch(err => {
@@ -77,7 +85,7 @@
         loadLogs();
         
         // Auto refresh every 30 seconds
-        setInterval(loadLogs, 30000);
+        setInterval(loadLogs, LOG_REFRESH_INTERVAL_MS);
     </script>
 </body>
 </html>
