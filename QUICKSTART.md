@@ -5,8 +5,9 @@
 ### Option 1: Automated Installation (Recommended)
 
 ```bash
-# Download and run the deployment script
-wget https://raw.githubusercontent.com/thinhnguyenict/fbmanager/main/deploy.sh
+# Clone repository and run the deployment script
+git clone https://github.com/thinhnguyenict/fbmanager.git
+cd fbmanager
 chmod +x deploy.sh
 ./deploy.sh
 ```
@@ -75,8 +76,9 @@ sudo systemctl restart fbmanager.service
 ### Cách 1: Cài đặt tự động (Khuyến nghị)
 
 ```bash
-# Tải và chạy script triển khai
-wget https://raw.githubusercontent.com/thinhnguyenict/fbmanager/main/deploy.sh
+# Clone repository và chạy script triển khai
+git clone https://github.com/thinhnguyenict/fbmanager.git
+cd fbmanager
 chmod +x deploy.sh
 ./deploy.sh
 ```
