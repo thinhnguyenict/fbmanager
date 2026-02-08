@@ -164,6 +164,41 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 echo ""
+echo "Step 10.5: Setting up Admin Configuration Interface..."
+read -p "Setup admin credentials for web configuration interface? (y/n) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    cd $INSTALL_DIR
+    source venv/bin/activate
+    
+    # Install Flask dependencies if not already installed
+    echo "Installing web interface dependencies..."
+    pip install flask flask-login flask-wtf wtforms bcrypt
+    
+    # Run setup script
+    echo ""
+    echo "Setting up admin credentials..."
+    python3 setup_admin.py
+    
+    # Set permissions for credentials file
+    if [ -f ".admin_credentials" ]; then
+        chmod 600 .admin_credentials
+        echo "✓ Admin credentials secured (chmod 600)"
+    fi
+    
+    # Create backups directory
+    mkdir -p backups
+    chmod 700 backups
+    echo "✓ Backup directory created"
+    
+    deactivate
+    echo ""
+    echo "✓ Admin configuration interface ready!"
+    echo "  To access: python3 app.py"
+    echo "  Then visit: http://localhost:5000/admin/login"
+fi
+
+echo ""
 echo "Step 11: Creating systemd service..."
 read -p "Create systemd service for auto-start? (y/n) " -n 1 -r
 echo
@@ -212,6 +247,9 @@ echo "========================================="
 echo ""
 echo "Next steps:"
 echo "1. Edit configuration: nano $INSTALL_DIR/.env"
+echo "   OR"
+echo "   Use web interface: python3 $INSTALL_DIR/app.py"
+echo "   Then visit: http://localhost:5000/admin/login"
 echo "2. Activate virtual environment: cd $INSTALL_DIR && source venv/bin/activate"
 echo "3. Run application manually: python main.py"
 echo "   OR"
@@ -220,5 +258,6 @@ echo ""
 echo "For detailed documentation, see:"
 echo "- Vietnamese: $INSTALL_DIR/DEPLOYMENT.md"
 echo "- English: $INSTALL_DIR/DEPLOYMENT_EN.md"
+echo "- Configuration Interface: $INSTALL_DIR/README_CONFIG.md"
 echo ""
 echo "========================================="
