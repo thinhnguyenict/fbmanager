@@ -67,12 +67,9 @@
                     if (data.error) {
                         document.getElementById('logs').textContent = 'Error: ' + data.error;
                     } else {
-                        // Use textContent to prevent XSS, then format with line breaks
+                        // Build full log content first, then set once for better performance
                         const logsElement = document.getElementById('logs');
-                        logsElement.textContent = ''; // Clear existing content
-                        data.logs.forEach(log => {
-                            logsElement.textContent += log;
-                        });
+                        logsElement.textContent = data.logs.join('');
                     }
                 })
                 .catch(err => {

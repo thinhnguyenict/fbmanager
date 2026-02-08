@@ -28,6 +28,7 @@ logger = logging.getLogger(__name__)
 
 # Constants
 MAX_LOG_LINES = 100  # Maximum number of log lines to return
+MAX_USERNAME_LENGTH = 50  # Maximum username length for display/logging
 
 # Simple authentication decorator
 def login_required(f):
@@ -55,7 +56,7 @@ def login():
         password = request.form.get('password', '')
         
         # Sanitize username for logging (alphanumeric, dash, underscore, dot only)
-        safe_username = re.sub(r'[^a-zA-Z0-9._@-]', '', username)[:50]
+        safe_username = re.sub(r'[^a-zA-Z0-9._@-]', '', username)[:MAX_USERNAME_LENGTH]
         
         # Validate credentials from environment
         admin_user = os.getenv('ADMIN_USER')
