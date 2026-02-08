@@ -1,0 +1,275 @@
+{% extends "base.html" %}
+
+{% block title %}Cấu hình - FB Manager Admin{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4><i class="bi bi-gear-fill"></i> Cấu hình FB Manager</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('config.setup') }}" id="configForm">
+                    {{ form.hidden_tag() }}
+                    
+                    <!-- Facebook Configuration -->
+                    <div class="config-section">
+                        <h5 class="section-title">
+                            <i class="bi bi-facebook"></i> Cấu hình Facebook
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.fb_email.label(class="form-label") }}
+                                    <span class="text-danger">*</span>
+                                    <i class="bi bi-question-circle" data-bs-toggle="tooltip" 
+                                       title="Email đăng nhập Facebook của bạn"></i>
+                                    {{ form.fb_email(class="form-control" + (" is-invalid" if form.fb_email.errors else "")) }}
+                                    {% if form.fb_email.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.fb_email.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.fb_password.label(class="form-label") }}
+                                    <span class="text-danger">*</span>
+                                    <i class="bi bi-question-circle" data-bs-toggle="tooltip" 
+                                       title="Mật khẩu Facebook của bạn (để trống nếu không thay đổi)"></i>
+                                    {{ form.fb_password(class="form-control" + (" is-invalid" if form.fb_password.errors else "")) }}
+                                    {% if form.fb_password.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.fb_password.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <small class="form-text text-muted">
+                                        Để trống nếu không muốn thay đổi mật khẩu hiện tại
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.facebook_app_id.label(class="form-label") }}
+                                    <i class="bi bi-question-circle" data-bs-toggle="tooltip" 
+                                       title="Facebook App ID (tùy chọn, để trống nếu không sử dụng)"></i>
+                                    {{ form.facebook_app_id(class="form-control") }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.facebook_app_secret.label(class="form-label") }}
+                                    <i class="bi bi-question-circle" data-bs-toggle="tooltip" 
+                                       title="Facebook App Secret (tùy chọn)"></i>
+                                    {{ form.facebook_app_secret(class="form-control") }}
+                                    <small class="form-text text-muted">
+                                        Để trống nếu không muốn thay đổi
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.facebook_redirect_uri.label(class="form-label") }}
+                            <i class="bi bi-question-circle" data-bs-toggle="tooltip" 
+                               title="URL callback cho OAuth (tùy chọn)"></i>
+                            {{ form.facebook_redirect_uri(class="form-control" + (" is-invalid" if form.facebook_redirect_uri.errors else "")) }}
+                            {% if form.facebook_redirect_uri.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.facebook_redirect_uri.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Application Configuration -->
+                    <div class="config-section">
+                        <h5 class="section-title">
+                            <i class="bi bi-app"></i> Cấu hình Ứng dụng
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3 form-check">
+                                    {{ form.debug(class="form-check-input") }}
+                                    {{ form.debug.label(class="form-check-label") }}
+                                    <i class="bi bi-question-circle" data-bs-toggle="tooltip" 
+                                       title="Bật chế độ debug để xem thông tin chi tiết"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    {{ form.log_level.label(class="form-label") }}
+                                    <i class="bi bi-question-circle" data-bs-toggle="tooltip" 
+                                       title="Mức độ chi tiết của log"></i>
+                                    {{ form.log_level(class="form-select") }}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    {{ form.log_file.label(class="form-label") }}
+                                    <i class="bi bi-question-circle" data-bs-toggle="tooltip" 
+                                       title="Đường dẫn file log"></i>
+                                    {{ form.log_file(class="form-control") }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Proxy Configuration -->
+                    <div class="config-section">
+                        <h5 class="section-title">
+                            <i class="bi bi-shield-lock"></i> Cấu hình Proxy (Tùy chọn)
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.proxy_host.label(class="form-label") }}
+                                    <i class="bi bi-question-circle" data-bs-toggle="tooltip" 
+                                       title="Địa chỉ proxy server"></i>
+                                    {{ form.proxy_host(class="form-control") }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.proxy_port.label(class="form-label") }}
+                                    <i class="bi bi-question-circle" data-bs-toggle="tooltip" 
+                                       title="Cổng proxy (1-65535)"></i>
+                                    {{ form.proxy_port(class="form-control" + (" is-invalid" if form.proxy_port.errors else "")) }}
+                                    {% if form.proxy_port.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.proxy_port.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.proxy_user.label(class="form-label") }}
+                                    <i class="bi bi-question-circle" data-bs-toggle="tooltip" 
+                                       title="Username cho proxy authentication"></i>
+                                    {{ form.proxy_user(class="form-control") }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.proxy_pass.label(class="form-label") }}
+                                    <i class="bi bi-question-circle" data-bs-toggle="tooltip" 
+                                       title="Password cho proxy authentication"></i>
+                                    {{ form.proxy_pass(class="form-control") }}
+                                    <small class="form-text text-muted">
+                                        Để trống nếu không muốn thay đổi
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Browser Configuration -->
+                    <div class="config-section">
+                        <h5 class="section-title">
+                            <i class="bi bi-browser-chrome"></i> Cấu hình Trình duyệt
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3 form-check">
+                                    {{ form.headless_browser(class="form-check-input") }}
+                                    {{ form.headless_browser.label(class="form-check-label") }}
+                                    <i class="bi bi-question-circle" data-bs-toggle="tooltip" 
+                                       title="Chạy trình duyệt ở chế độ ẩn (không hiển thị giao diện)"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.browser_timeout.label(class="form-label") }}
+                                    <i class="bi bi-question-circle" data-bs-toggle="tooltip" 
+                                       title="Thời gian chờ tối đa cho browser (giây)"></i>
+                                    {{ form.browser_timeout(class="form-control" + (" is-invalid" if form.browser_timeout.errors else "")) }}
+                                    {% if form.browser_timeout.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.browser_timeout.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <div>
+                            <button type="submit" class="btn btn-primary btn-lg" id="saveBtn">
+                                <i class="bi bi-save"></i> Lưu cấu hình
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="resetBtn">
+                                <i class="bi bi-arrow-clockwise"></i> Làm mới
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#backupModal">
+                                <i class="bi bi-clock-history"></i> Sao lưu & Khôi phục
+                            </button>
+                            <button type="button" class="btn btn-warning" id="restartBtn">
+                                <i class="bi bi-arrow-repeat"></i> Khởi động lại dịch vụ
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Backup Modal -->
+<div class="modal fade" id="backupModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-clock-history"></i> Quản lý Sao lưu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="backupList">
+                    <div class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Đang tải...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Spinner -->
+<div class="modal fade" id="loadingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="visually-hidden">Đang xử lý...</span>
+                </div>
+                <h5 id="loadingText">Đang xử lý...</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+</script>
+{% endblock %}

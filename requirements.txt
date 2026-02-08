@@ -27,10 +27,12 @@ openpyxl>=3.1.0
 # sqlalchemy>=2.0.0
 # psycopg2-binary>=2.9.0
 
-# API framework (if web interface needed)
-# flask>=3.0.0
-# fastapi>=0.104.0
-# uvicorn>=0.24.0
+# Web framework for admin interface
+flask>=3.0.0
+flask-login>=0.6.3
+flask-wtf>=1.2.0
+wtforms>=3.1.0
+bcrypt>=4.1.0
 
 # Scheduling (optional)
 # schedule>=1.2.0
