@@ -21,8 +21,17 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
 
+def _is_debug_enabled():
+    """
+    Parse the DEBUG environment variable into a boolean.
+    Treat common truthy values ('1', 'true', 'yes', 'on') as enabling debug.
+    Any other value (including empty) is considered False.
+    """
+    debug_value = os.getenv('DEBUG', '')
+    return debug_value.strip().lower() in ('1', 'true', 'yes', 'on')
+
 # Validate secret key
-if app.secret_key == 'dev-secret-key-change-in-production' and not os.getenv('DEBUG'):
+if app.secret_key == 'dev-secret-key-change-in-production' and not _is_debug_enabled():
     raise ValueError("SECRET_KEY must be set in production environment")
 
 # Setup Flask-Login
