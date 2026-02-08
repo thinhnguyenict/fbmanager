@@ -20,7 +20,7 @@ if [ "$EUID" -eq 0 ]; then
     CURRENT_USER="root"
 else
     echo "✓ Running as non-root user: $USER"
-    USE_SUDO="sudo"
+    USE_SUDO="sudo "
     CURRENT_USER="$USER"
 fi
 echo ""
@@ -207,9 +207,9 @@ EOF
     $USE_SUDO systemctl enable fbmanager.service
     echo "✓ Systemd service created and enabled"
     echo ""
-    echo "To start the service: ${USE_SUDO} systemctl start fbmanager.service"
-    echo "To check status: ${USE_SUDO} systemctl status fbmanager.service"
-    echo "To view logs: ${USE_SUDO} journalctl -u fbmanager.service -f"
+    echo "To start the service: ${USE_SUDO}systemctl start fbmanager.service"
+    echo "To check status: ${USE_SUDO}systemctl status fbmanager.service"
+    echo "To view logs: ${USE_SUDO}journalctl -u fbmanager.service -f"
 fi
 
 echo ""
@@ -222,7 +222,7 @@ echo "1. Edit configuration: nano $INSTALL_DIR/.env"
 echo "2. Activate virtual environment: cd $INSTALL_DIR && source venv/bin/activate"
 echo "3. Run application manually: python main.py"
 echo "   OR"
-echo "   Start as service: ${USE_SUDO} systemctl start fbmanager.service"
+echo "   Start as service: ${USE_SUDO}systemctl start fbmanager.service"
 echo ""
 echo "For detailed documentation, see:"
 echo "- Vietnamese: $INSTALL_DIR/DEPLOYMENT.md"
