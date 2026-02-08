@@ -54,13 +54,16 @@ backup_installation() {
     BACKUP_FILE="$BACKUP_DIR/fbmanager_backup_$TIMESTAMP.tar.gz"
     
     cd /opt
-    tar -czf "$BACKUP_FILE" fbmanager/ 2>/dev/null || true
+    if tar -czf "$BACKUP_FILE" fbmanager/ 2>/dev/null; then
+        print_success "Backup created: $BACKUP_FILE"
+    else
+        print_warning "Backup creation failed (possibly due to disk space or permissions)"
+        print_warning "Continuing anyway, but restoration won't be possible if update fails"
+    fi
     
     # Keep only last 5 backups
     cd "$BACKUP_DIR"
-    ls -t fbmanager_backup_*.tar.gz | tail -n +6 | xargs rm -f 2>/dev/null || true
-    
-    print_success "Backup created: $BACKUP_FILE"
+    ls -t fbmanager_backup_*.tar.gz 2>/dev/null | tail -n +6 | xargs rm -f 2>/dev/null || true
 }
 
 # Stop service
@@ -84,7 +87,8 @@ pull_code() {
     # Check if there are local changes
     if ! git diff-index --quiet HEAD --; then
         print_warning "Local changes detected, stashing..."
-        git stash
+        git stash push -m "Auto-stash by update_web.sh at $(date)"
+        print_warning "Your changes are stashed. To recover: git stash pop"
     fi
     
     # Pull latest code
@@ -128,7 +132,7 @@ setup_env() {
         cp "$APP_DIR/.env.example" "$ENV_FILE"
         
         # Generate random secret key
-        SECRET_KEY=$(openssl rand -base64 32 | tr -d "=+/" | cut -c1-32)
+        SECRET_KEY=$(openssl rand -hex 32)
         
         # Update .env with random secret
         sed -i "s/your-random-secret-key-change-in-production/$SECRET_KEY/" "$ENV_FILE"
@@ -150,7 +154,7 @@ setup_env() {
             echo "WEB_HOST=0.0.0.0" >> "$ENV_FILE"
             echo "WEB_PORT=8000" >> "$ENV_FILE"
             
-            SECRET_KEY=$(openssl rand -base64 32 | tr -d "=+/" | cut -c1-32)
+            SECRET_KEY=$(openssl rand -hex 32)
             echo "SECRET_KEY=$SECRET_KEY" >> "$ENV_FILE"
             echo "" >> "$ENV_FILE"
             echo "# Admin credentials for web interface" >> "$ENV_FILE"
