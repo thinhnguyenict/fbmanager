@@ -4,7 +4,8 @@ Quản lý FB
 ## 🚀 Quick Start / Khởi động nhanh
 
 ```bash
-wget https://raw.githubusercontent.com/thinhnguyenict/fbmanager/main/deploy.sh
+git clone https://github.com/thinhnguyenict/fbmanager.git
+cd fbmanager
 chmod +x deploy.sh
 ./deploy.sh
 ```
