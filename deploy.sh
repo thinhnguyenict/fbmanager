@@ -11,12 +11,19 @@ echo "Ubuntu 24.04.3 LTS with Python 3.12.3"
 echo "========================================="
 echo ""
 
-# Check if running as root
+# Check if running as root and set USE_SUDO accordingly
 if [ "$EUID" -eq 0 ]; then 
-    echo "⚠️  Please do not run this script as root"
-    echo "   Run as normal user with sudo privileges"
-    exit 1
+    echo "⚠️  Running as root user"
+    echo "   File permissions will be set to root:root"
+    echo "   Consider running as a non-root user for better security"
+    USE_SUDO=""
+    CURRENT_USER="root"
+else
+    echo "✓ Running as non-root user: $USER"
+    USE_SUDO="sudo "
+    CURRENT_USER="$USER"
 fi
+echo ""
 
 # Check if running on Ubuntu
 if ! grep -q "Ubuntu" /etc/os-release; then
@@ -29,11 +36,11 @@ if ! grep -q "Ubuntu" /etc/os-release; then
 fi
 
 echo "Step 1: Updating system packages..."
-sudo apt update && sudo apt upgrade -y
+$USE_SUDO apt update && $USE_SUDO apt upgrade -y
 
 echo ""
 echo "Step 2: Installing required packages..."
-sudo apt install -y build-essential libssl-dev libffi-dev python3-dev \
+$USE_SUDO apt install -y build-essential libssl-dev libffi-dev python3-dev \
     git curl wget software-properties-common \
     python3-pip python3-venv
 
@@ -55,7 +62,7 @@ if ! command -v python3.12 &> /dev/null; then
         cd Python-3.12.3
         ./configure --enable-optimizations
         make -j $(nproc)
-        sudo make altinstall
+        $USE_SUDO make altinstall
         cd ~
         echo "✓ Python 3.12.3 installed successfully"
     else
@@ -75,14 +82,14 @@ if [ -d "$INSTALL_DIR" ]; then
     read -p "Remove and reinstall? (y/n) " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        sudo rm -rf $INSTALL_DIR
+        $USE_SUDO rm -rf $INSTALL_DIR
     else
         echo "Keeping existing directory"
     fi
 fi
 
-sudo mkdir -p $INSTALL_DIR
-sudo chown $USER:$USER $INSTALL_DIR
+$USE_SUDO mkdir -p $INSTALL_DIR
+$USE_SUDO chown $CURRENT_USER:$CURRENT_USER $INSTALL_DIR
 
 echo ""
 echo "Step 5: Cloning repository..."
@@ -114,8 +121,8 @@ fi
 
 echo ""
 echo "Step 8: Creating log directory..."
-sudo mkdir -p /var/log/fbmanager
-sudo chown $USER:$USER /var/log/fbmanager
+$USE_SUDO mkdir -p /var/log/fbmanager
+$USE_SUDO chown $CURRENT_USER:$CURRENT_USER /var/log/fbmanager
 
 echo ""
 echo "Step 9: Creating configuration file..."
@@ -150,7 +157,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     # Install Chrome
     if ! command -v google-chrome &> /dev/null; then
         wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-        sudo apt install ./google-chrome-stable_current_amd64.deb -y
+        $USE_SUDO apt install ./google-chrome-stable_current_amd64.deb -y
         rm google-chrome-stable_current_amd64.deb
     fi
     
@@ -178,14 +185,14 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
         fi
     fi
     
-    sudo tee /etc/systemd/system/fbmanager.service > /dev/null << EOF
+    $USE_SUDO tee /etc/systemd/system/fbmanager.service > /dev/null << EOF
 [Unit]
 Description=FB Manager Service
 After=network.target
 
 [Service]
 Type=simple
-User=$USER
+User=$CURRENT_USER
 WorkingDirectory=$INSTALL_DIR
 Environment="PATH=$INSTALL_DIR/venv/bin"
 ExecStart=$INSTALL_DIR/venv/bin/python $MAIN_FILE
@@ -196,13 +203,13 @@ RestartSec=10
 WantedBy=multi-user.target
 EOF
     
-    sudo systemctl daemon-reload
-    sudo systemctl enable fbmanager.service
+    $USE_SUDO systemctl daemon-reload
+    $USE_SUDO systemctl enable fbmanager.service
     echo "✓ Systemd service created and enabled"
     echo ""
-    echo "To start the service: sudo systemctl start fbmanager.service"
-    echo "To check status: sudo systemctl status fbmanager.service"
-    echo "To view logs: sudo journalctl -u fbmanager.service -f"
+    echo "To start the service: ${USE_SUDO}systemctl start fbmanager.service"
+    echo "To check status: ${USE_SUDO}systemctl status fbmanager.service"
+    echo "To view logs: ${USE_SUDO}journalctl -u fbmanager.service -f"
 fi
 
 echo ""
@@ -215,7 +222,7 @@ echo "1. Edit configuration: nano $INSTALL_DIR/.env"
 echo "2. Activate virtual environment: cd $INSTALL_DIR && source venv/bin/activate"
 echo "3. Run application manually: python main.py"
 echo "   OR"
-echo "   Start as service: sudo systemctl start fbmanager.service"
+echo "   Start as service: ${USE_SUDO}systemctl start fbmanager.service"
 echo ""
 echo "For detailed documentation, see:"
 echo "- Vietnamese: $INSTALL_DIR/DEPLOYMENT.md"
