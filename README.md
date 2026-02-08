@@ -12,6 +12,38 @@ chmod +x deploy.sh
 
 📖 **[Quick Start Guide / Hướng dẫn nhanh](QUICKSTART.md)**
 
+## 🚀 Cập nhật tự động Web Interface
+
+### Cách 1: Sử dụng script tự động (Khuyến nghị)
+
+Script này sẽ tự động:
+- ✅ Backup code hiện tại
+- ✅ Pull code mới từ GitHub
+- ✅ Cài đặt dependencies
+- ✅ Cấu hình systemd service
+- ✅ Mở firewall port 8000
+- ✅ Khởi động web interface
+
+```bash
+# SSH vào VPS
+ssh user@your-vps-ip
+
+# Di chuyển vào thư mục dự án
+cd /opt/fbmanager
+
+# Pull script mới nhất
+git pull origin main
+
+# Chạy script tự động
+sudo bash update_web.sh
+```
+
+Sau khi chạy xong, truy cập: `http://YOUR_VPS_IP:8000`
+
+### Cách 2: Cập nhật thủ công
+
+Xem chi tiết tại [DEPLOYMENT.md](DEPLOYMENT.md)
+
 ## 📚 Hướng dẫn triển khai đầy đủ / Full Deployment Guide
 
 Xem hướng dẫn chi tiết để triển khai ứng dụng lên VPS Ubuntu 24.04.3 LTS với Python 3.12.3:
