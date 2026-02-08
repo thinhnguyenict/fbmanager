@@ -1,0 +1,40 @@
+# FB Manager - Python Dependencies
+# For Ubuntu 24.04.3 LTS with Python 3.12.3
+
+# Web automation
+selenium>=4.15.0
+webdriver-manager>=4.0.0
+
+# HTTP requests
+requests>=2.31.0
+urllib3>=2.0.0
+
+# HTML parsing
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+
+# Configuration management
+python-dotenv>=1.0.0
+
+# Logging and monitoring
+colorlog>=6.7.0
+
+# Data handling
+pandas>=2.1.0
+openpyxl>=3.1.0
+
+# Database (optional)
+# sqlalchemy>=2.0.0
+# psycopg2-binary>=2.9.0
+
+# API framework (if web interface needed)
+# flask>=3.0.0
+# fastapi>=0.104.0
+# uvicorn>=0.24.0
+
+# Scheduling (optional)
+# schedule>=1.2.0
+# apscheduler>=3.10.0
+
+# Security
+cryptography>=41.0.0
