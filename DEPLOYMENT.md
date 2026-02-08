@@ -1,5 +1,21 @@
 # Hướng dẫn triển khai FB Manager trên VPS Ubuntu
 
+## ⚡ Cập nhật nhanh với Script tự động
+
+Nếu bạn muốn cập nhật nhanh web interface, sử dụng script tự động:
+
+```bash
+cd /opt/fbmanager
+git pull origin main
+sudo bash update_web.sh
+```
+
+Script sẽ tự động thực hiện tất cả các bước cần thiết.
+
+---
+
+## 📖 Hướng dẫn chi tiết từng bước
+
 ## Yêu cầu hệ thống
 
 - **Hệ điều hành**: Ubuntu 24.04.3 LTS x86_64
