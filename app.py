@@ -325,9 +325,15 @@ def get_analytics_overview():
 @login_required
 def get_analytics_chart():
     """Get analytics chart data"""
-    # Last 7 days data
+    # Generate last 7 days labels dynamically
+    labels = []
+    for i in range(6, -1, -1):
+        date = datetime.now() - timedelta(days=i)
+        labels.append(date.strftime('%b %d'))
+    
+    # Mock data for demonstration
     chart_data = {
-        'labels': ['Feb 2', 'Feb 3', 'Feb 4', 'Feb 5', 'Feb 6', 'Feb 7', 'Feb 8'],
+        'labels': labels,
         'followers': [3200, 3280, 3350, 3420, 3480, 3540, 3590],
         'engagement': [120, 145, 132, 168, 155, 178, 185],
         'posts': [2, 3, 1, 4, 2, 3, 5]
