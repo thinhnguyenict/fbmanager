@@ -10,7 +10,6 @@ from datetime import datetime, timedelta
 from pathlib import Path
 import json
 from werkzeug.utils import secure_filename
-import requests
 
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
