@@ -1,16 +1,38 @@
 # fbmanager
 Quản lý FB
 
-## Hướng dẫn triển khai
+## 🚀 Quick Start / Khởi động nhanh
 
-Xem hướng dẫn chi tiết để triển khai ứng dụng lên VPS:
+```bash
+wget https://raw.githubusercontent.com/thinhnguyenict/fbmanager/main/deploy.sh
+chmod +x deploy.sh
+./deploy.sh
+```
 
-- **[Tiếng Việt](DEPLOYMENT.md)** - Hướng dẫn triển khai trên Ubuntu 24.04.3 LTS với Python 3.12.3
-- **[English](DEPLOYMENT_EN.md)** - Deployment guide for Ubuntu 24.04.3 LTS with Python 3.12.3
+📖 **[Quick Start Guide / Hướng dẫn nhanh](QUICKSTART.md)**
 
-## Deployment Guide
+## 📚 Hướng dẫn triển khai đầy đủ / Full Deployment Guide
 
-See detailed deployment instructions for VPS deployment:
+Xem hướng dẫn chi tiết để triển khai ứng dụng lên VPS Ubuntu 24.04.3 LTS với Python 3.12.3:
 
-- **[Vietnamese](DEPLOYMENT.md)** - Deployment guide for Ubuntu 24.04.3 LTS with Python 3.12.3
-- **[English](DEPLOYMENT_EN.md)** - Deployment guide for Ubuntu 24.04.3 LTS with Python 3.12.3
+- **[🇻🇳 Tiếng Việt](DEPLOYMENT.md)** - Hướng dẫn triển khai chi tiết
+- **[🇬🇧 English](DEPLOYMENT_EN.md)** - Detailed deployment guide
+
+## 📋 Tính năng / Features
+
+- Quản lý tài khoản Facebook / Facebook account management
+- Tự động hóa các tác vụ / Task automation
+- Hỗ trợ Python 3.12.3
+- Tương thích Ubuntu 24.04.3 LTS
+- Dễ dàng triển khai lên VPS / Easy VPS deployment
+
+## 🛠️ Yêu cầu hệ thống / System Requirements
+
+- Ubuntu 24.04.3 LTS x86_64
+- Python 3.12.3
+- RAM: Tối thiểu 1GB (khuyến nghị 2GB+)
+- Ổ cứng: Tối thiểu 10GB / Storage: Minimum 10GB
+
+## 📝 License
+
+MIT License
