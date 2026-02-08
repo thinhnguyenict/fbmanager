@@ -144,7 +144,7 @@ setup_env() {
         echo "  - FB_PASSWORD"
         
         read -p "Press Enter to edit .env now or Ctrl+C to cancel..."
-        nano "$ENV_FILE"
+        ${EDITOR:-nano} "$ENV_FILE"
     else
         # Check if new variables need to be added
         if ! grep -q "WEB_HOST" "$ENV_FILE"; then
@@ -163,7 +163,7 @@ setup_env() {
             
             print_warning "Added web interface config. Please update ADMIN_PASSWORD!"
             read -p "Press Enter to edit .env now or Ctrl+C to skip..."
-            nano "$ENV_FILE"
+            ${EDITOR:-nano} "$ENV_FILE"
         fi
         print_success "Environment configured"
     fi
@@ -256,7 +256,7 @@ show_info() {
     echo ""
     
     echo "🔐 Login credentials:"
-    ADMIN_USER=$(grep ADMIN_USER "$ENV_FILE" | cut -d'=' -f2)
+    ADMIN_USER=$(grep '^ADMIN_USER=' "$ENV_FILE" 2>/dev/null | cut -d'=' -f2- || echo "admin")
     echo "   Username: $ADMIN_USER"
     echo "   Password: (check $ENV_FILE)"
     echo ""
