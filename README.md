@@ -11,6 +11,33 @@ chmod +x deploy.sh
 
 📖 **[Quick Start Guide / Hướng dẫn nhanh](QUICKSTART.md)**
 
+## 🌐 Web Admin Interface
+
+Sau khi deployment, bạn có thể truy cập giao diện quản lý web tại:
+
+```
+http://YOUR_VPS_IP:8000
+```
+
+**Đăng nhập mặc định:**
+- Username: `admin`
+- Password: (xem trong file `.env`)
+
+**⚠️ Lưu ý bảo mật:**
+- Đổi `ADMIN_PASSWORD` trong file `.env` ngay sau khi cài đặt
+- Đổi `SECRET_KEY` thành giá trị ngẫu nhiên
+- Cân nhắc thiết lập SSL/HTTPS cho production
+
+### Chạy web interface
+
+```bash
+cd /opt/fbmanager
+source venv/bin/activate
+python app.py
+```
+
+Hoặc sử dụng systemd service (xem DEPLOYMENT.md)
+
 ## 📚 Hướng dẫn triển khai đầy đủ / Full Deployment Guide
 
 Xem hướng dẫn chi tiết để triển khai ứng dụng lên VPS Ubuntu 24.04.3 LTS với Python 3.12.3:
