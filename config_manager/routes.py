@@ -152,25 +152,31 @@ def setup():
                 form.browser_timeout.data = 30
     
     if form.validate_on_submit():
+        # Read current values once for reuse
+        current_vars = env_handler.read_env()
+        
         # Prepare environment variables
         env_vars = {}
         
         # Facebook configuration
         env_vars['FB_EMAIL'] = form.fb_email.data
+        
         # Only update password if a new one is provided
         if form.fb_password.data:
             env_vars['FB_PASSWORD'] = form.fb_password.data
         else:
-            # Keep existing password
-            current_vars = env_handler.read_env()
-            env_vars['FB_PASSWORD'] = current_vars.get('FB_PASSWORD', '')
+            # Keep existing password or error if none exists
+            if current_vars.get('FB_PASSWORD'):
+                env_vars['FB_PASSWORD'] = current_vars.get('FB_PASSWORD')
+            else:
+                flash('Facebook Password is required for initial setup.', 'danger')
+                return render_template('config.html', form=form)
         
         env_vars['FACEBOOK_APP_ID'] = form.facebook_app_id.data or ''
         # Only update app secret if a new one is provided
         if form.facebook_app_secret.data:
             env_vars['FACEBOOK_APP_SECRET'] = form.facebook_app_secret.data
         else:
-            current_vars = env_handler.read_env()
             env_vars['FACEBOOK_APP_SECRET'] = current_vars.get('FACEBOOK_APP_SECRET', '')
         
         env_vars['FACEBOOK_REDIRECT_URI'] = form.facebook_redirect_uri.data or ''
@@ -188,7 +194,6 @@ def setup():
         if form.proxy_pass.data:
             env_vars['PROXY_PASS'] = form.proxy_pass.data
         else:
-            current_vars = env_handler.read_env()
             env_vars['PROXY_PASS'] = current_vars.get('PROXY_PASS', '')
         
         # Browser settings

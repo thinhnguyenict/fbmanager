@@ -22,8 +22,8 @@ class ConfigForm(FlaskForm):
                           validators=[DataRequired(), Email()],
                           render_kw={'placeholder': 'your_email@example.com'})
     fb_password = PasswordField('Facebook Password', 
-                               validators=[DataRequired()],
-                               render_kw={'placeholder': 'Your Facebook password'})
+                               validators=[Optional()],
+                               render_kw={'placeholder': 'Leave blank to keep current password'})
     facebook_app_id = StringField('Facebook App ID', 
                                   validators=[Optional()],
                                   render_kw={'placeholder': 'Optional'})
